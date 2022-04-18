@@ -1,4 +1,4 @@
-import { ApolloClient, gql, InMemoryCache } from '@apollo/client'
+import { gql } from '@apollo/client'
 import Button from '@components/Button'
 import Container from '@components/Container'
 import Layout from '@components/Layout'
@@ -6,10 +6,9 @@ import styles from '@styles/Page.module.scss'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
+import { apolloClient } from 'src/clients/apollo'
 
 export default function Home({ home, products }) {
-  console.log('🚀 ~ products', products)
-
   const { heroTitle, heroText, heroLink, heroBackground } = home
 
   return (
@@ -46,7 +45,7 @@ export default function Home({ home, products }) {
           {products.map((product) => {
             return (
               <li key={product.slug}>
-                <Link href="#">
+                <Link href={`/products/${product.slug}`}>
                   <a>
                     <div className={styles.productImage}>
                       <Image
@@ -73,12 +72,7 @@ export default function Home({ home, products }) {
 }
 
 export async function getStaticProps() {
-  const client = new ApolloClient({
-    uri: 'https://api-sa-east-1.graphcms.com/v2/cl23yxl535uf001xu9j0z7eyh/master',
-    cache: new InMemoryCache(),
-  })
-
-  const { data } = await client.query({
+  const { data } = await apolloClient.query({
     query: gql`
       query PageHome {
         page(where: { slug: "home" }) {
@@ -100,8 +94,7 @@ export async function getStaticProps() {
     `,
   })
 
-  const home = data.page
-  const products = data.products
+  const { products, page: home } = data
 
   return {
     props: {
