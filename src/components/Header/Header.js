@@ -6,7 +6,6 @@ import styles from './Header.module.scss'
 
 const Header = () => {
   const { cart = {} } = useSnipcart()
-  console.log('🚀 ~ cart', cart)
 
   return (
     <header className={styles.header}>
@@ -18,13 +17,13 @@ const Header = () => {
         </p>
         <ul className={styles.headerLinks}>
           <li>
-            <Link href="#">
-              <a>Link</a>
+            <Link href="/categories/apparel">
+              <a>Apparel</a>
             </Link>
           </li>
           <li>
-            <Link href="#">
-              <a>Link</a>
+            <Link href="/categories/accessories">
+              <a>Acessories</a>
             </Link>
           </li>
           <li>
