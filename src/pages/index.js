@@ -7,6 +7,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import { apolloClient } from 'src/clients/apollo'
+import { buildImage } from 'src/services/cloudinary'
 
 export default function Home({ home, products }) {
   const { heroTitle, heroText, heroLink, heroBackground } = home
@@ -30,7 +31,7 @@ export default function Home({ home, products }) {
               </div>
               <Image
                 className={styles.heroImage}
-                src={heroBackground.url}
+                src={buildImage(heroBackground.public_id).toURL()}
                 width={heroBackground.width}
                 height={heroBackground.height}
                 alt="Hero image"
@@ -42,31 +43,35 @@ export default function Home({ home, products }) {
         <h2 className={styles.heading}>Featured Gear</h2>
 
         <ul className={styles.products}>
-          {products.map((product) => {
+          {products.map(({ id, name, price, slug, image }) => {
+            const imageUrl = buildImage(image.public_id)
+              .resize('w_900,h_900')
+              .toURL()
+
             return (
-              <li key={product.slug}>
-                <Link href={`/products/${product.slug}`}>
+              <li key={slug}>
+                <Link href={`/products/${slug}`}>
                   <a>
                     <div className={styles.productImage}>
                       <Image
-                        width={product.image.width}
-                        height={product.image.height}
-                        src={product.image.url}
-                        alt={product.name}
+                        width={image.width}
+                        height={image.height}
+                        src={imageUrl}
+                        alt={name}
                       />
                     </div>
-                    <h3 className={styles.productTitle}>{product.name}</h3>
-                    <p className={styles.productPrice}>${product.price}</p>
+                    <h3 className={styles.productTitle}>{name}</h3>
+                    <p className={styles.productPrice}>${price}</p>
                   </a>
                 </Link>
                 <p>
                   <Button
                     className="snipcart-add-item"
-                    data-item-id={product.id}
-                    data-item-price={product.price}
-                    data-item-url={`/products/${product.slug}`}
-                    data-item-image={product.image.url}
-                    data-item-name={product.name}
+                    data-item-id={id}
+                    data-item-price={price}
+                    data-item-url={`/products/${slug}`}
+                    data-item-image={image.url}
+                    data-item-name={name}
                   >
                     Add to Cart
                   </Button>

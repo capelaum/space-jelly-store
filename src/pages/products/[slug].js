@@ -6,6 +6,7 @@ import styles from '@styles/Product.module.scss'
 import Head from 'next/head'
 import Image from 'next/image'
 import { apolloClient } from 'src/clients/apollo'
+import { buildImage } from 'src/services/cloudinary'
 
 export default function Product({ product }) {
   return (
@@ -24,7 +25,9 @@ export default function Product({ product }) {
             <Image
               width={product.image.width}
               height={product.image.height}
-              src={product.image.url}
+              src={buildImage(product.image.public_id)
+                .resize('w_900,h_900')
+                .toURL()}
               alt={product.name}
             />
           </div>
