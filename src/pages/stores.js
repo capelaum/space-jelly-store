@@ -12,7 +12,6 @@ import { apolloClient } from 'src/clients/apollo'
 
 export default function Stores({ storeLocations }) {
   const [activeStoreId, setActiveStoreId] = useState()
-  console.log('🚀 ~ activeStore', activeStoreId)
 
   const features = points(
     storeLocations.map(({ location }) => {

@@ -80,10 +80,12 @@ export default function Home({ home, products }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getStaticProps({ locale }) {
+  console.log('🚀 ~ locale', locale)
+
   const { data } = await apolloClient.query({
     query: gql`
-      query PageHome {
+      query PageHome($locale: Locale!) {
         page(where: { slug: "home" }) {
           id
           heroLink
@@ -92,6 +94,11 @@ export async function getStaticProps() {
           name
           slug
           heroBackground
+          localizations(locales: [$locale]) {
+            heroText
+            heroTitle
+            locale
+          }
         }
         products(where: { categories_some: { slug: "featured" } }) {
           id
@@ -102,9 +109,19 @@ export async function getStaticProps() {
         }
       }
     `,
+    variables: { locale },
   })
 
-  const { products, page: home } = data
+  let home = data.page
+
+  if (home.localizations.length > 0) {
+    home = {
+      ...home,
+      ...home.localizations[0],
+    }
+  }
+
+  const { products } = data
 
   return {
     props: {
