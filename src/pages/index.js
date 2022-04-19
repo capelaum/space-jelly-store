@@ -81,8 +81,6 @@ export default function Home({ home, products }) {
 }
 
 export async function getStaticProps({ locale }) {
-  console.log('🚀 ~ locale', locale)
-
   const { data } = await apolloClient.query({
     query: gql`
       query PageHome($locale: Locale!) {

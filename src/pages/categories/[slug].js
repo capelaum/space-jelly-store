@@ -9,8 +9,6 @@ import Link from 'next/link'
 import { apolloClient } from 'src/clients/apollo'
 
 export default function Category({ category, products }) {
-  console.log('🚀 ~ category, products', category, products)
-
   return (
     <Layout>
       <Head>
