@@ -1,13 +1,32 @@
 import { gql } from '@apollo/client'
 import Container from '@components/Container'
 import Layout from '@components/Layout'
-import Map from '@components/Map'
+import Map, { MapEffect } from '@components/Map'
 import styles from '@styles/Page.module.scss'
+import center from '@turf/center'
+import { points } from '@turf/helpers'
 import Head from 'next/head'
+import { useState } from 'react'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { apolloClient } from 'src/clients/apollo'
 
 export default function Stores({ storeLocations }) {
+  const [activeStoreId, setActiveStoreId] = useState()
+  console.log('🚀 ~ activeStore', activeStoreId)
+
+  const features = points(
+    storeLocations.map(({ location }) => {
+      return [location.latitude, location.longitude]
+    })
+  )
+
+  const [defaultLatitude, defaultLongitude] =
+    center(features)?.geometry.coordinates
+
+  function handleStoreClick(storeId) {
+    setActiveStoreId(storeId)
+  }
+
   return (
     <Layout>
       <Head>
@@ -28,7 +47,9 @@ export default function Stores({ storeLocations }) {
                     <address>{address}</address>
                     <p>{phoneNumber}</p>
                     <p className={styles.locationDiscovery}>
-                      <button>View on Map</button>
+                      <button onClick={() => handleStoreClick(id)}>
+                        View on Map
+                      </button>
                       <a
                         href={`https://www.google.com/maps/dir//${location.latitude},${location.longitude}/@${location.latitude},${location.longitude},14z`}
                         target="_blank"
@@ -48,13 +69,17 @@ export default function Stores({ storeLocations }) {
             <div className={styles.storesMapContainer}>
               <Map
                 className={styles.map}
-                center={[0, 0]}
-                zoom={2}
+                center={[defaultLatitude, defaultLongitude]}
+                zoom={12}
                 scrollWheelZoom={false}
               >
                 {({ TileLayer, Marker, Popup }, map) => {
                   return (
                     <>
+                      <MapEffect
+                        activeStoreId={activeStoreId}
+                        storeLocations={storeLocations}
+                      />
                       <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

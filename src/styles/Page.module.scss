@@ -134,11 +134,14 @@
     padding: 1.5em 0;
   }
 
+  button {
+    cursor: pointer;
+  }
+
   li {
     padding-bottom: 2em;
     border-bottom: solid 1px gray;
     margin-bottom: 2em;
-    cursor: pointer;
 
     &:last-child {
       padding-bottom: 0;
