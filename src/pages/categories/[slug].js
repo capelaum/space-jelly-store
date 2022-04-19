@@ -60,7 +60,7 @@ export default function Category({ category, products }) {
   )
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ params, locales }) {
   const { data } = await apolloClient.query({
     query: gql`
       query PageCategory($slug: String) {
@@ -93,7 +93,7 @@ export async function getStaticProps({ params }) {
   }
 }
 
-export async function getStaticPaths() {
+export async function getStaticPaths({ locales }) {
   const { data } = await apolloClient.query({
     query: gql`
       query PageCategories {
@@ -114,7 +114,14 @@ export async function getStaticPaths() {
   })
 
   return {
-    paths,
+    paths: [
+      ...paths,
+      ...paths.flatMap((path) => {
+        return locales.map((locale) => {
+          return { ...path, locale }
+        })
+      }),
+    ],
     fallback: false,
   }
 }

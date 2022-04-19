@@ -55,10 +55,10 @@ export default function Product({ product }) {
   )
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ params, locale }) {
   const { data } = await apolloClient.query({
     query: gql`
-      query PageProduct($slug: String) {
+      query PageProduct($slug: String, $locale: Locale!) {
         product(where: { slug: $slug }) {
           id
           name
@@ -68,22 +68,36 @@ export async function getStaticProps({ params }) {
           description {
             html
           }
+          localizations(locales: [$locale]) {
+            description {
+              html
+            }
+            locale
+          }
         }
       }
     `,
     variables: {
       slug: params.slug,
+      locale,
     },
   })
 
-  const { product } = data
+  let { product } = data
+
+  if (product.localizations.length > 0) {
+    product = {
+      ...product,
+      ...product.localizations[0],
+    }
+  }
 
   return {
     props: { product },
   }
 }
 
-export async function getStaticPaths() {
+export async function getStaticPaths({ locales }) {
   const { data } = await apolloClient.query({
     query: gql`
       query PageProducts {
@@ -106,7 +120,14 @@ export async function getStaticPaths() {
   })
 
   return {
-    paths,
+    paths: [
+      ...paths,
+      ...paths.flatMap((path) => {
+        return locales.map((locale) => {
+          return { ...path, locale }
+        })
+      }),
+    ],
     fallback: false,
   }
 }
