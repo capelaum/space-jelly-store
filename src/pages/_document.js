@@ -21,7 +21,7 @@ export default function Document() {
         <div
           hidden
           id="snipcart"
-          data-api-key="MGQyZWY4Y2YtYjU1Zi00MDM4LTg5ODAtMzRhMWUwYTNhOWFjNjM3ODU5MTEwNjkxMjg2NzQ5"
+          data-api-key={process.env.NEXT_PUBLIC_SNIPCART_API_KEY}
           data-config-add-product-behavior="side"
         ></div>
       </body>

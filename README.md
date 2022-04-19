@@ -1,9 +1,11 @@
-# Space Jelly Gear Starter
+# Space Jelly Store
 
-## ⚡️ Quick Start
+## Demo
 
-```bash
-yarn create next-app -e https://github.com/colbyfayock/space-jelly-gear-starter
-# or
-npx create-next-app -e https://github.com/colbyfayock/space-jelly-gear-starter
-```
+https://capelaum-space-jelly-store.vercel.app
+
+<img src=".github/space-jelly-store.png" />
+
+## Crash Course
+
+Made in this [egghead crash course](https://egghead.io/courses/ecommerce-product-management-storefront-with-graphcms-snipcart-next-js-13cc0534), by [Colby Fayock](https://egghead.io/q/resources-by-colby-fayock)
