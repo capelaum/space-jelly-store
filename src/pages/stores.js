@@ -1,14 +1,13 @@
 import { gql } from '@apollo/client'
 import Container from '@components/Container'
 import Layout from '@components/Layout'
+import Map from '@components/Map'
 import styles from '@styles/Page.module.scss'
 import Head from 'next/head'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { apolloClient } from 'src/clients/apollo'
 
 export default function Stores({ storeLocations }) {
-  console.log('🚀 ~ storeLocations', storeLocations)
-
   return (
     <Layout>
       <Head>
@@ -47,7 +46,40 @@ export default function Stores({ storeLocations }) {
 
           <div className={styles.storesMap}>
             <div className={styles.storesMapContainer}>
-              <div className={styles.map}>Map</div>
+              <Map
+                className={styles.map}
+                center={[0, 0]}
+                zoom={2}
+                scrollWheelZoom={false}
+              >
+                {({ TileLayer, Marker, Popup }, map) => {
+                  return (
+                    <>
+                      <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      />
+                      {storeLocations.map(
+                        ({
+                          id,
+                          name,
+                          address,
+                          location: { latitude, longitude },
+                        }) => (
+                          <Marker position={[latitude, longitude]} key={id}>
+                            <Popup>
+                              <p>
+                                <strong>{name}</strong>
+                              </p>
+                              <p>{address}</p>
+                            </Popup>
+                          </Marker>
+                        )
+                      )}
+                    </>
+                  )
+                }}
+              </Map>
             </div>
           </div>
         </div>
